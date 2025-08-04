@@ -1,0 +1,2 @@
+ALTER TABLE "meal-prep_meal" ADD COLUMN "userId" varchar(255) NOT NULL;--> statement-breakpoint
+ALTER TABLE "meal-prep_meal" ADD CONSTRAINT "meal-prep_meal_userId_meal-prep_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."meal-prep_user"("id") ON DELETE cascade ON UPDATE no action;
