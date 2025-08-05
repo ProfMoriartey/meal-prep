@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(request: NextRequest) {
   // Temporarily disable all middleware logic
-  console.log("Middleware bypassed for:", request.nextUrl.pathname);
+  // console.log("Middleware bypassed for:", request.nextUrl.pathname);
   return NextResponse.next();
 }
 

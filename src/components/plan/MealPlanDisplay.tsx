@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getMealPlans, deleteMealPlan } from "~/app/_actions/plans";
-import { format, isSameDay } from "date-fns";
+import { useState, useMemo } from "react";
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  isSameDay,
+} from "date-fns";
+import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { Calendar } from "~/components/ui/calendar";
 import { type MealPlan } from "~/lib/zod";
+import { type CalendarDay, type Modifiers } from "react-day-picker";
 
 // A type definition for the data returned from `getMealPlans`
 type MealPlanWithMeal = MealPlan & {
@@ -16,117 +22,100 @@ type MealPlanWithMeal = MealPlan & {
   };
 };
 
+// Helper component for a custom day cell
+const DayCell = ({
+  day,
+  plannedMeals,
+}: {
+  day: Date;
+  plannedMeals: MealPlanWithMeal[];
+}) => {
+  const mealsForDay = plannedMeals.filter((plan) =>
+    isSameDay(new Date(plan.plannedDate), day),
+  );
+
+  return (
+    <Link
+      href={`/plan/${format(day, "yyyy-MM-dd")}`}
+      className="h-24 w-full rounded-md border p-2 transition-colors duration-150 hover:bg-gray-100"
+    >
+      <div className="text-sm font-bold text-gray-700">{format(day, "d")}</div>
+      <div className="mt-1 space-y-1">
+        {mealsForDay.map((plan) => (
+          <div
+            key={plan.id}
+            className="truncate rounded-sm bg-blue-100 px-1 text-xs text-blue-800"
+          >
+            {plan.meal.name}
+          </div>
+        ))}
+      </div>
+    </Link>
+  );
+};
+
 export default function MealPlanDisplay({
   initialMealPlans,
 }: {
   initialMealPlans: MealPlanWithMeal[];
 }) {
-  const [date, setDate] = useState<Date>(new Date());
-  const [mealPlans, setMealPlans] =
-    useState<MealPlanWithMeal[]>(initialMealPlans);
-  const [loading, setLoading] = useState(false);
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
-  // Function to fetch meal plans for the currently viewed month
-  const fetchMealPlans = async (currentDate: Date) => {
-    setLoading(true);
-    const startOfMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1,
-    );
-    const endOfMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0,
-    );
-    const plans = await getMealPlans(startOfMonth, endOfMonth);
-    setMealPlans(plans as MealPlanWithMeal[]); // Cast to the correct type
-    setLoading(false);
+  const daysInMonth = useMemo(() => {
+    const start = startOfMonth(currentDate);
+    const end = endOfMonth(currentDate);
+    return eachDayOfInterval({ start, end });
+  }, [currentDate]);
+
+  const handlePrevMonth = () => {
+    setCurrentDate((prevDate) => {
+      const newDate = new Date(prevDate);
+      newDate.setMonth(newDate.getMonth() - 1);
+      return newDate;
+    });
   };
 
-  // Fetch meal plans whenever the month changes
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchMealPlans(date);
-    };
-    void fetchData();
-  }, [date]);
-
-  // Function to handle meal plan deletion
-  const handleDelete = async (mealPlanId: number) => {
-    if (window.confirm("Are you sure you want to delete this meal plan?")) {
-      const result = await deleteMealPlan(mealPlanId);
-      if (result.success) {
-        await fetchMealPlans(date);
-      } else {
-        alert(result.error);
-      }
-    }
+  const handleNextMonth = () => {
+    setCurrentDate((prevDate) => {
+      const newDate = new Date(prevDate);
+      newDate.setMonth(newDate.getMonth() + 1);
+      return newDate;
+    });
   };
 
   return (
-    <section className="flex flex-col items-center rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
-      <h2 className="mb-4 text-xl font-semibold">Your Planned Meals</h2>
+    <section className="rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+      <div className="mb-4 flex items-center justify-between">
+        <Button onClick={handlePrevMonth} variant="ghost" size="sm">
+          &lt; Prev
+        </Button>
+        <h2 className="text-xl font-semibold">
+          {format(currentDate, "MMMM yyyy")}
+        </h2>
+        <Button onClick={handleNextMonth} variant="ghost" size="sm">
+          Next &gt;
+        </Button>
+      </div>
 
-      {loading ? (
-        <p>Loading meal plans...</p>
-      ) : (
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          className="w-full"
-          required
-          classNames={{
-            day_selected:
-              "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-            day_today: "bg-accent text-accent-foreground",
-          }}
-          components={{
-            Day: ({ day }) => {
-              const plannedMeal = mealPlans.find((plan) =>
-                isSameDay(new Date(plan.plannedDate), day.date),
-              );
+      <div className="mb-2 grid grid-cols-7 gap-2 text-center font-medium text-gray-500">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tue</div>
+        <div>Wed</div>
+        <div>Thu</div>
+        <div>Fri</div>
+        <div>Sat</div>
+      </div>
 
-              return (
-                <div className="relative flex h-full w-full flex-col items-center justify-start p-1">
-                  <div className="text-center font-bold">
-                    {format(day.date, "d")}
-                  </div>
-                  {plannedMeal && (
-                    <div className="mt-1 truncate text-center text-xs">
-                      {plannedMeal.meal.name}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(plannedMeal.id)}
-                        className="h-auto p-1"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="lucide lucide-x-circle text-red-500"
-                        >
-                          <circle cx="12" cy="12" r="10" />
-                          <path d="m15 9-6 6" />
-                          <path d="m9 9 6 6" />
-                        </svg>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              );
-            },
-          }}
-        />
-      )}
+      <div className="grid grid-cols-7 gap-2">
+        {daysInMonth.map((day) => (
+          <DayCell
+            key={day.toISOString()}
+            day={day}
+            plannedMeals={initialMealPlans}
+          />
+        ))}
+      </div>
     </section>
   );
 }

@@ -34,7 +34,7 @@ export const authConfig = {
   }),
   callbacks: {
     session: ({ session, user }) => {
-      console.log("Session callback called:", { session, user });
+      // console.log("Session callback called:", { session, user });
       return {
         ...session,
         user: {
