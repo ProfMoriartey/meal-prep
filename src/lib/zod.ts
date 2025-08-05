@@ -19,7 +19,14 @@ export const createMealFormSchema = z.object({
   ).min(1, "At least one ingredient is required."),
 });
 
+// New Zod schema for meal plan creation
+export const createMealPlanFormSchema = z.object({
+  mealId: z.number().int().positive({ message: "A valid meal must be selected." }),
+  plannedDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Invalid date format. Expected YYYY-MM-DD" }),
+});
+
 export type Meal = z.infer<typeof mealSchema>;
 export type Ingredient = z.infer<typeof ingredientSchema>;
 export type MealToIngredient = z.infer<typeof mealToIngredientSchema>;
 export type MealPlan = z.infer<typeof mealPlanSchema>;
+export type CreateMealPlanForm = z.infer<typeof createMealPlanFormSchema>;

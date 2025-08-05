@@ -12,6 +12,20 @@ type FormState = {
   error?: string;
 };
 
+// New function to fetch all meals for the current user
+export async function getMeals() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return [];
+  }
+
+  const userMeals = await db.query.meals.findMany({
+    where: eq(meals.userId, session.user.id),
+  });
+
+  return userMeals;
+}
+
 export async function createMeal(prevState: FormState, formData: FormData): Promise<FormState> {
   const session = await auth();
   if (!session?.user?.id) {

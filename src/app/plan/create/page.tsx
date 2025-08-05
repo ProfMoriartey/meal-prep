@@ -1,12 +1,11 @@
-// src/app/plan/page.tsx
+// src/app/plan/create/page.tsx
 
 import { getMeals } from "~/app/_actions/meals";
 import { getMealPlans } from "~/app/_actions/plans";
 import MealPlanConfig from "~/components/plan/MealPlanConfig";
 import MealPlanDisplay from "~/components/plan/MealPlanDisplay";
 
-export default async function PlanPage() {
-  // Fetch initial meals on the server. This data is needed for the config section.
+export default async function CreatePlanPage() {
   const initialMeals = await getMeals();
 
   // We will need to fetch the initial meal plans to display them on the calendar.
@@ -20,10 +19,15 @@ export default async function PlanPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="mb-6 text-3xl font-bold">Plan Your Meals</h1>
+      <h1 className="mb-6 text-3xl font-bold">Create a New Meal Plan</h1>
 
-      {/* Display Section */}
-      <MealPlanDisplay initialMealPlans={initialMealPlans} />
+      <div className="grid gap-8 md:grid-cols-2">
+        {/* Configuration Section */}
+        <MealPlanConfig meals={initialMeals} />
+
+        {/* Display Section */}
+        <MealPlanDisplay initialMealPlans={initialMealPlans} />
+      </div>
     </div>
   );
 }
