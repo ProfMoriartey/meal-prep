@@ -1,4 +1,4 @@
-// middleware.ts - TEMPORARILY DISABLED FOR TESTING
+// src/middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(request: NextRequest) {
@@ -8,8 +8,23 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|manifest.json|icons/).*)", // ✨ Added manifest.json and icons/
+  ],
 };
+
+// // middleware.ts - TEMPORARILY DISABLED FOR TESTING
+// import { NextRequest, NextResponse } from "next/server";
+
+// export default async function middleware(request: NextRequest) {
+//   // Temporarily disable all middleware logic
+//   // console.log("Middleware bypassed for:", request.nextUrl.pathname);
+//   return NextResponse.next();
+// }
+
+// export const config = {
+//   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+// };
 
 // // middleware.ts
 // import { NextRequest, NextResponse } from "next/server";
