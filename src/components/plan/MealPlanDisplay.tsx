@@ -11,7 +11,6 @@ import {
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { type MealPlan } from "~/lib/zod";
-import { type CalendarDay, type Modifiers } from "react-day-picker";
 
 // A type definition for the data returned from `getMealPlans`
 type MealPlanWithMeal = MealPlan & {

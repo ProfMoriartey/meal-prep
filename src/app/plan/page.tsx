@@ -1,14 +1,9 @@
 // src/app/plan/page.tsx
 
-import { getMeals } from "~/app/_actions/meals";
 import { getMealPlans } from "~/app/_actions/plans";
-import MealPlanConfig from "~/components/plan/MealPlanConfig";
 import MealPlanDisplay from "~/components/plan/MealPlanDisplay";
 
 export default async function PlanPage() {
-  // Fetch initial meals on the server. This data is needed for the config section.
-  const initialMeals = await getMeals();
-
   // We will need to fetch the initial meal plans to display them on the calendar.
   // The client component will handle subsequent fetches.
   const oneMonthAgo = new Date();

@@ -1,4 +1,4 @@
-import { MealForm } from "./MealForm";
+import MealForm from "~/components/meals/MealForm";
 
 export default function CreateMealPage() {
   return (

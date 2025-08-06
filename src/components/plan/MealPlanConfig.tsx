@@ -20,7 +20,6 @@ import {
 } from "~/components/ui/popover";
 import { format } from "date-fns";
 import { type Meal } from "~/lib/zod";
-import { useRouter } from "next/navigation";
 
 const initialState = {
   success: undefined,
@@ -28,7 +27,6 @@ const initialState = {
 };
 
 export default function MealPlanConfig({ meals }: { meals: Meal[] }) {
-  const router = useRouter();
   const [selectedMealId, setSelectedMealId] = useState<string | undefined>(
     undefined,
   );

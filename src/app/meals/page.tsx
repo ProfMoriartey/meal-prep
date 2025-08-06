@@ -2,7 +2,9 @@
 
 import { db } from "~/server/db";
 import { auth } from "~/server/auth";
-import { MealList } from "./_components/MealList";
+import { deleteMeal } from "../_actions/meals";
+import { revalidatePath } from "next/cache";
+import MealCard from "~/components/shared/MealCard";
 
 export default async function MealsPage() {
   const session = await auth();
@@ -20,11 +22,35 @@ export default async function MealsPage() {
       },
     },
   });
+  const handleMealDelete = async (mealId: number) => {
+    "use server";
+    await deleteMeal(mealId);
+    revalidatePath("/meals");
+  };
 
   return (
     <main className="container mx-auto p-4">
       <h1 className="text-2xl font-bold">Your Meal Library</h1>
-      <MealList meals={allMeals} />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {allMeals.length > 0 ? (
+          allMeals.map((meal) => (
+            <MealCard
+              key={meal.id}
+              meal={meal}
+              // Map the meal_to_ingredients to the format expected by MealCard
+              ingredients={meal.meal_to_ingredients.map((mti) => ({
+                name: mti.ingredient.name,
+                quantity: mti.quantity ?? "N/A", // Provide a fallback for quantity
+              }))}
+              onDelete={handleMealDelete}
+            />
+          ))
+        ) : (
+          <p>No meals found. Create one to get started.</p>
+        )}
+      </div>
+
+      {/* <MealList meals={allMeals} /> */}
     </main>
   );
 }

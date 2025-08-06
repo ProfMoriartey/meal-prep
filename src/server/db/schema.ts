@@ -3,10 +3,6 @@ import {
   index,
   pgTableCreator,
   primaryKey,
-  varchar,
-  integer,
-  timestamp,
-  date,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 

@@ -8,14 +8,15 @@ import { ZodError } from "zod";
 import { createMealPlanFormSchema } from "~/lib/zod";
 import { revalidatePath } from "next/cache";
 
+// A consistent return type for all server actions
 type FormState = {
   success?: string;
   error?: string;
 };
 
-// 🔧 Local date formatter (YYYY-MM-DD, no timezone shift)
+// FIX: Changed to use toISOString().split('T')[0] for consistent YYYY-MM-DD UTC date string
 const formatToLocalDateString = (date: Date) =>
-  date.toLocaleDateString("en-CA", { timeZone: "UTC" }); // '2025-08-22'
+  date.toISOString().split('T')[0];
 
 /**
  * Fetches all meal plans for a user within a specified date range.
@@ -32,12 +33,21 @@ export async function getMealPlans(startDate: Date, endDate: Date) {
   const userMealPlans = await db.query.meal_plans.findMany({
     where: and(
       eq(meal_plans.userId, session.user.id),
+      // Use TO_CHAR for exact single-day comparison, or BETWEEN for ranges
       startDateString === endDateString
-        ? sql`${meal_plans.plannedDate} = ${startDateString}`
+        ? sql`TO_CHAR(${meal_plans.plannedDate}, 'YYYY-MM-DD') = ${startDateString}`
         : sql`${meal_plans.plannedDate} >= ${startDateString} AND ${meal_plans.plannedDate} <= ${endDateString}`
     ),
     with: {
-      meal: true,
+      meal: {
+        with: {
+          meal_to_ingredients: {
+            with: {
+              ingredient: true,
+            },
+          },
+        },
+      },
     },
     orderBy: [desc(meal_plans.plannedDate)],
   });
@@ -79,6 +89,7 @@ export async function createMealPlan(
     const [newPlan] = await db
       .insert(meal_plans)
       .values({
+        // FIX: Removed unnecessary non-null assertion as session.user.id is already checked
         userId: session.user.id,
         mealId: data.mealId,
         plannedDate: data.plannedDate,
