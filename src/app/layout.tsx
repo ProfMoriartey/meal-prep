@@ -25,6 +25,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${geist.variable}`}>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body>
         {" "}
         <SessionProvider session={session}>{children}</SessionProvider>

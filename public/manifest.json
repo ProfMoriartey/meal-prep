@@ -1,0 +1,36 @@
+{
+  "name": "Meal Planner",
+  "short_name": "Meal Planner",
+  "description": "A personal meal planner and recipe manager.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1f2937",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Create Meal",
+      "short_name": "New Meal",
+      "description": "Add a new meal to your library",
+      "url": "/meals/create",
+      "icons": [{ "src": "/icons/new-meal-icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "View Plans",
+      "short_name": "Plans",
+      "description": "View your meal plans",
+      "url": "/plan"
+    }
+  ]
+}
