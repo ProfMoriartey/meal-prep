@@ -4,7 +4,7 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { auth } from "~/server/auth";
 import { SessionProvider } from "~/components/session-provider";
-import AppLayout from "~/components/shared/AppLayout";
+import ConditionalLayoutWrapper from "~/components/shared/ConditionalLayoutWrapper";
 
 export const metadata: Metadata = {
   title: "Planny",
@@ -38,7 +38,7 @@ export default async function RootLayout({
       </head>
       <body>
         <SessionProvider session={session}>
-          <AppLayout>{children}</AppLayout>
+          <ConditionalLayoutWrapper>{children}</ConditionalLayoutWrapper>
         </SessionProvider>
       </body>
     </html>
