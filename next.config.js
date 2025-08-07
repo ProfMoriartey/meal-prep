@@ -3,7 +3,7 @@ import './src/env.js'; // Keep this line as is
 import withPWA from 'next-pwa'; // Use ES module import
 
 /** @type {import("next").NextConfig} */
-const config = {
+const config = {images: { domains: ["utfs.io", "placehold.co", "avatars.githubusercontent.com", "lh3.googleusercontent.com"] }
   // Your existing Next.js configurations go here.
 };
 

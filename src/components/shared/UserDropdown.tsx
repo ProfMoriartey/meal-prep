@@ -22,29 +22,31 @@ interface UserDropdownProps {
 }
 
 export default function UserDropdown({ user }: UserDropdownProps) {
+  // A fallback for the user's initial if no image is available
+  const userInitial = user.name
+    ? user.name.charAt(0).toUpperCase()
+    : user.email
+      ? user.email.charAt(0).toUpperCase()
+      : "?";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          {/* Display user initial or image if available */}
+        <Button variant="ghost" className="relative h-14 w-14 rounded-full">
+          {/* FIX: Conditionally render image or initial */}
           {user.image ? (
             <img
               src={user.image}
-              alt={user.name ?? "User"}
+              alt={user.name || "User"}
               className="h-8 w-8 rounded-full object-cover"
             />
           ) : (
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-800">
-              {user.name
-                ? user.name.charAt(0).toUpperCase()
-                : user.email
-                  ? user.email.charAt(0).toUpperCase()
-                  : "?"}
+              {userInitial}
             </div>
           )}
         </Button>
       </DropdownMenuTrigger>
-      {/* FIX: Added z-50 to ensure the dropdown content appears on top */}
       <DropdownMenuContent className="z-50 w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">

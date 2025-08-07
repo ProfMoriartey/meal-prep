@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { auth } from "~/server/auth"; // Still need auth to check login status
 import { signIn, signOut } from "next-auth/react"; // For the sign-in button
+import SignInButton from "~/components/shared/SignInButton";
+import SignOutButton from "~/components/shared/SignOutButton";
 
 export default async function HomePage() {
   const session = await auth();
@@ -31,6 +33,7 @@ export default async function HomePage() {
                     Go to Meals
                   </Button>
                 </Link>
+                <SignOutButton />
               </div>
             </div>
           ) : (
@@ -38,12 +41,7 @@ export default async function HomePage() {
               <p className="text-center text-2xl text-white">
                 Sign in to start planning your meals!
               </p>
-              <Button
-                onClick={() => signIn()}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                Sign In
-              </Button>
+              <SignInButton />
             </div>
           )}
         </div>
