@@ -37,7 +37,7 @@ export default function UserDropdown({ user }: UserDropdownProps) {
           {user.image ? (
             <img
               src={user.image}
-              alt={user.name || "User"}
+              alt={user.name ?? "User"}
               className="h-8 w-8 rounded-full object-cover"
             />
           ) : (
