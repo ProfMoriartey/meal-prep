@@ -11,6 +11,7 @@ import {
   LogOut,
   type LucideIcon,
   UserRound,
+  ShoppingBasket,
 } from "lucide-react";
 import React from "react";
 
@@ -75,9 +76,9 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           />
           <SidebarLink href="/meals" icon={Utensils} label="Meals" />
           <SidebarLink
-            href="/meals/create"
-            icon={PlusCircle}
-            label="New Meal"
+            href="/shopping-list"
+            icon={ShoppingBasket}
+            label="Shopping List"
           />
           <SidebarLink href="/profile" icon={UserRound} label="Profile" />
         </nav>
@@ -109,7 +110,11 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
             label="Add to Plan"
           />
           <NavButton href="/meals" icon={Utensils} label="Meals" />
-          <NavButton href="/meals/create" icon={PlusCircle} label="New Meal" />
+          <NavButton
+            href="/shopping-list"
+            icon={ShoppingBasket}
+            label="Shopping List"
+          />
           <NavButton href="/profile" icon={UserRound} label="Profile" />
         </nav>
       </div>
