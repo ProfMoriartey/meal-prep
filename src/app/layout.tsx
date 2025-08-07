@@ -1,23 +1,16 @@
-// src/app/layout.tsx
-
 import "~/styles/globals.css";
-
-import { Inter } from "next/font/google";
-import { cn } from "~/lib/utils";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { auth } from "~/server/auth";
 import { SessionProvider } from "~/components/session-provider";
-import Sidebar from "~/components/shared/Sidebar"; // Import the Sidebar component
+import AppLayout from "~/components/shared/AppLayout";
 
 export const metadata: Metadata = {
   title: "Planny",
   description: "Manage your meal prep and ingredients all in one place",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
-
-const inter = Inter({ subsets: ["latin"] });
 
 const geist = Geist({
   subsets: ["latin"],
@@ -44,10 +37,9 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Meal Planner" />
       </head>
       <body>
-        {" "}
-        <Sidebar session={session}>
-          <SessionProvider session={session}>{children}</SessionProvider>
-        </Sidebar>
+        <SessionProvider session={session}>
+          <AppLayout>{children}</AppLayout>
+        </SessionProvider>
       </body>
     </html>
   );
